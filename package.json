@@ -1,8 +1,9 @@
 {
    "name": "jpeg",
-   "version": "1.0.0",
+   "version": "1.0.1",
    "main": "build/Release/jpeg",
    "description": "A C++ module for node-js that converts RGB and RGBA buffers to a JPEG images (in memory).",
+   "private": true,
    "keywords": [
        "jpg",
        "rgba",
@@ -26,7 +27,7 @@
    "repositories": [
        {
            "type": "git",
-           "url": "http://github.com/pkrumins/node-jpeg.git" 
+           "url": "http://github.com/psm14/node-jpeg.git" 
        } 
    ],
    "directories": {

@@ -25,8 +25,8 @@ Jpeg::Initialize(v8::Handle<v8::Object> target)
     target->Set(String::NewSymbol("Jpeg"), t->GetFunction());
 }
 
-Jpeg::Jpeg(unsigned char *ddata, int wwidth, int hheight, buffer_type bbuf_type) :
-    jpeg_encoder(ddata, wwidth, hheight, 60, bbuf_type) {}
+Jpeg::Jpeg(unsigned char *ddata, int wwidth, int hheight, int qquality, buffer_type bbuf_type) :
+    jpeg_encoder(ddata, wwidth, hheight, qquality, bbuf_type) {}
 
 Handle<Value>
 Jpeg::JpegEncodeSync()
@@ -65,21 +65,26 @@ Jpeg::New(const Arguments &args)
         return VException("Second argument must be integer width.");
     if (!args[2]->IsInt32())
         return VException("Third argument must be integer height.");
+    if (!args[3]->IsInt32())
+        return VException("Third argument must be integer quality.");
 
     int w = args[1]->Int32Value();
     int h = args[2]->Int32Value();
+    int q = args[3]->Int32Value();
 
     if (w < 0)
         return VException("Width can't be negative.");
     if (h < 0)
         return VException("Height can't be negative.");
+    if (q < 0 || q > 100)
+        return VException("Quality must be between 0 and 100");
 
     buffer_type buf_type = BUF_RGB;
-    if (args.Length() == 4) {
-        if (!args[3]->IsString())
+    if (args.Length() == 5) {
+        if (!args[4]->IsString())
             return VException("Fifth argument must be a string. Either 'rgb', 'bgr', 'rgba' or 'bgra'.");
 
-        String::AsciiValue bt(args[3]->ToString());
+        String::AsciiValue bt(args[4]->ToString());
         if (!(str_eq(*bt, "rgb") || str_eq(*bt, "bgr") ||
             str_eq(*bt, "rgba") || str_eq(*bt, "bgra")))
         {
@@ -99,7 +104,7 @@ Jpeg::New(const Arguments &args)
     }
 
     Local<Object> buffer = args[0]->ToObject();
-    Jpeg *jpeg = new Jpeg((unsigned char*) Buffer::Data(buffer), w, h, buf_type);
+    Jpeg *jpeg = new Jpeg((unsigned char*) Buffer::Data(buffer), w, h, q, buf_type);
     jpeg->Wrap(args.This());
     return args.This();
 }
