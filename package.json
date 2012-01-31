@@ -1,16 +1,9 @@
 {
-   "name": "jpeg",
+   "name": "jpegmod",
    "version": "1.0.1",
-   "main": "build/Release/jpeg",
+   "main": "build/Release/jpegmod",
    "description": "A C++ module for node-js that converts RGB and RGBA buffers to a JPEG images (in memory).",
    "private": true,
-   "keywords": [
-       "jpg",
-       "rgba",
-       "rgb",
-       "image",
-       "picture"
-   ],
    "maintainers": [
        {
            "name": "Peteris Krumins",
@@ -35,7 +28,7 @@
        "src": "src"
    },
    "engines": {
-       "node": ">=0.1.93"
+       "node": ">=0.6.0"
    },
    "scripts": {
        "install": "node-waf configure build"
