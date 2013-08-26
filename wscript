@@ -16,15 +16,15 @@ def configure(conf):
 
 def build(bld):
   obj = bld.new_task_gen("cxx", "shlib", "node_addon")
-  obj.target = "jpeg"
+  obj.target = "jpegmod"
   obj.source = "src/common.cpp src/jpeg_encoder.cpp src/jpeg.cpp src/fixed_jpeg_stack.cpp src/dynamic_jpeg_stack.cpp src/module.cpp"
   obj.uselib = "JPEG"
   obj.cxxflags = ["-D_FILE_OFFSET_BITS=64", "-D_LARGEFILE_SOURCE"]
 
 def shutdown():
   if Options.commands['clean']:
-    if exists('jpeg.node'): unlink('jpeg.node')
+    if exists('jpegmod.node'): unlink('jpegmod.node')
   else:
-    if exists('build/default/jpeg.node') and not exists('jpeg.node'):
-      symlink('build/default/jpeg.node', 'jpeg.node')
+    if exists('build/default/jpegmod.node') and not exists('jpegmod.node'):
+      symlink('build/default/jpegmod.node', 'jpegmod.node')
 
