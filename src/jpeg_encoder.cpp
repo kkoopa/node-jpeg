@@ -207,4 +207,3 @@ JpegEncoder::setRect(const Rect &r)
 {
     offset = r;
 }
-

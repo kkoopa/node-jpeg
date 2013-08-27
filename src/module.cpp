@@ -9,11 +9,10 @@ using namespace v8;
 extern "C" void
 init(Handle<Object> target)
 {
-    HandleScope scope;
+    NanScope();
     Jpeg::Initialize(target);
     FixedJpegStack::Initialize(target);
     DynamicJpegStack::Initialize(target);
 }
 
 NODE_MODULE(jpeg, init)
-

@@ -9,8 +9,18 @@
 class Jpeg : public node::ObjectWrap {
     JpegEncoder jpeg_encoder;
 
-    static void EIO_JpegEncode(uv_work_t *req);
-    static int EIO_JpegEncodeAfter(uv_work_t *req);
+    class JpegEncodeWorker : public JpegEncoder::EncodeWorker {
+    public:
+        JpegEncodeWorker(NanCallback *callback, Jpeg *jpeg) : EncodeWorker(callback), jpeg_obj(jpeg) {
+        };
+
+        void Execute();
+        void HandleOKCallback();
+
+    private:
+        Jpeg *jpeg_obj;
+    };
+
 public:
     static void Initialize(v8::Handle<v8::Object> target);
     Jpeg(unsigned char *ddata, int wwidth, int hheight, int qquality, buffer_type bbuf_type);
@@ -18,11 +28,11 @@ public:
     void SetQuality(int q);
     void SetSmoothing(int s);
 
-    static v8::Handle<v8::Value> New(const v8::Arguments &args);
-    static v8::Handle<v8::Value> JpegEncodeSync(const v8::Arguments &args);
-    static v8::Handle<v8::Value> JpegEncodeAsync(const v8::Arguments &args);
-    static v8::Handle<v8::Value> SetQuality(const v8::Arguments &args);
-    static v8::Handle<v8::Value> SetSmoothing(const v8::Arguments &args);
+    static NAN_METHOD(New);
+    static NAN_METHOD(JpegEncodeSync);
+    static NAN_METHOD(JpegEncodeAsync);
+    static NAN_METHOD(SetQuality);
+    static NAN_METHOD(SetSmoothing);
 };
 
 #endif

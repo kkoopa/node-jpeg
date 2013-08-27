@@ -7,9 +7,9 @@
 #include "common.h"
 
 class JpegEncoder {
+    unsigned char *data;
     int width, height, quality, smoothing;
     buffer_type buf_type;
-    unsigned char *data;
 
     unsigned char *jpeg;
     long unsigned int jpeg_len;
@@ -21,6 +21,24 @@ public:
         int qquality, buffer_type bbuf_type);
     ~JpegEncoder();
 
+    class EncodeWorker : public NanAsyncWorker {
+    public:
+        EncodeWorker(NanCallback *callback) : NanAsyncWorker(callback) {
+              jpeg = NULL;
+              jpeg_len = 0;
+//            NanScope();
+//            Local<Object> obj = Object::New();
+//            NanAssignPersistent(Object, persistentHandle, obj);
+        };
+
+//        virtual void HandleOKCallback();
+//        virtual void HandleErrorCallback();
+
+    protected:
+        char *jpeg;
+        int jpeg_len;
+    };
+
     void encode();
     void set_quality(int qquality);
     void set_smoothing(int ssmoothing);
@@ -30,5 +48,5 @@ public:
     void setRect(const Rect &r);
 };
 
-#endif
 
+#endif

@@ -1,6 +1,5 @@
 var JpegLib = require('../build/Release/jpeg');
 var fs = require('fs');
-var sys = require('sys');
 var Buffer = require('buffer').Buffer;
 
 // --------
@@ -30,4 +29,4 @@ fs.writeFileSync('dynamic.jpg', jpegStack.encodeSync().toString('binary'), 'bina
 
 var dims = jpegStack.dimensions();
 
-sys.puts("x: " + dims.x + ", y: " + dims.y + ", w: " + dims.width + ", h: " + dims.height);
+console.log("x: " + dims.x + ", y: " + dims.y + ", w: " + dims.width + ", h: " + dims.height);

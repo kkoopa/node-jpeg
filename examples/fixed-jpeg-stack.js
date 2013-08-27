@@ -1,6 +1,5 @@
 var JpegLib = require('../build/Release/jpeg');
 var fs = require('fs');
-var sys = require('sys');
 var Buffer = require('buffer').Buffer;
 
 var jpegStack = new JpegLib.FixedJpegStack(720, 400, 'rgba');

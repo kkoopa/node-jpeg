@@ -14,10 +14,10 @@ class DynamicJpegStack : public node::ObjectWrap {
     int quality;
     buffer_type buf_type;
 
-    unsigned char *data;
-
-    int bg_width, bg_height; // background width and height after setBackground
     Rect dyn_rect; // rect of dynamic push area (updated after each push)
+    int bg_width, bg_height; // background width and height after setBackground
+
+    unsigned char *data;
 
     void update_optimal_dimension(int x, int y, int w, int h);
 
@@ -34,15 +34,28 @@ public:
     v8::Handle<v8::Value> Dimensions();
     void Reset();
 
+    class DynamicJpegEncodeWorker : public JpegEncoder::EncodeWorker {
+    public:
+        DynamicJpegEncodeWorker(NanCallback *callback, DynamicJpegStack *jpeg) : JpegEncoder::EncodeWorker(callback), jpeg_obj(jpeg) {
+        };
+
+        void Execute();
+        void HandleOKCallback();
+
+
+    private:
+        DynamicJpegStack *jpeg_obj;
+    };
+
     static void Initialize(v8::Handle<v8::Object> target);
-    static v8::Handle<v8::Value> New(const v8::Arguments &args);
-    static v8::Handle<v8::Value> JpegEncodeSync(const v8::Arguments &args);
-    static v8::Handle<v8::Value> JpegEncodeAsync(const v8::Arguments &args);
-    static v8::Handle<v8::Value> Push(const v8::Arguments &args);
-    static v8::Handle<v8::Value> SetBackground(const v8::Arguments &args);
-    static v8::Handle<v8::Value> SetQuality(const v8::Arguments &args);
-    static v8::Handle<v8::Value> Dimensions(const v8::Arguments &args);
-    static v8::Handle<v8::Value> Reset(const v8::Arguments &args);
+    static NAN_METHOD(New);
+    static NAN_METHOD(JpegEncodeSync);
+    static NAN_METHOD(JpegEncodeAsync);
+    static NAN_METHOD(Push);
+    static NAN_METHOD(SetBackground);
+    static NAN_METHOD(SetQuality);
+    static NAN_METHOD(Dimensions);
+    static NAN_METHOD(Reset);
 };
 
 #endif

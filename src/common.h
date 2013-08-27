@@ -3,9 +3,7 @@
 
 #include <node.h>
 #include <cstring>
-
-v8::Handle<v8::Value> ErrorException(const char *msg);
-v8::Handle<v8::Value> VException(const char *msg);
+#include "nan.h"
 
 struct Point {
     int x, y;
@@ -26,14 +24,6 @@ unsigned char *bgra_to_rgb(const unsigned char *rgba, int bgra_size);
 unsigned char *bgr_to_rgb(const unsigned char *rgb, int rgb_size);
 
 typedef enum { BUF_RGB, BUF_BGR, BUF_RGBA, BUF_BGRA } buffer_type;
-
-struct encode_request {
-    v8::Persistent<v8::Function> callback;
-    void *jpeg_obj;
-    char *jpeg;
-    int jpeg_len;
-    char *error;
-};
 
 #endif
 

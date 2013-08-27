@@ -1,9 +1,8 @@
 var fs  = require('fs');
-var sys = require('sys');
 var Jpeg = require('../build/Release/jpeg').Jpeg;
 var Buffer = require('buffer').Buffer;
 
-var WIDTH = 400, HEIGHT = 300;
+var WIDTH = 400, HEIGHT = 300, QUALITY=100;
 
 var rgba = new Buffer(WIDTH*HEIGHT*3);
 
@@ -15,7 +14,7 @@ for (var i=0; i<HEIGHT; i++) {
     }
 }
 
-var jpeg = new Jpeg(rgba, WIDTH, HEIGHT, 'rgb');
+var jpeg = new Jpeg(rgba, WIDTH, HEIGHT, QUALITY, 'rgb');
 jpeg.encode(function (jpeg_img) {
     fs.writeFileSync('./jpeg-gradient-async.jpeg', jpeg_img.toString('binary'), 'binary');
 });
