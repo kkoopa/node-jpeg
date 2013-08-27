@@ -26,13 +26,7 @@ public:
         EncodeWorker(NanCallback *callback) : NanAsyncWorker(callback) {
               jpeg = NULL;
               jpeg_len = 0;
-//            NanScope();
-//            Local<Object> obj = Object::New();
-//            NanAssignPersistent(Object, persistentHandle, obj);
         };
-
-//        virtual void HandleOKCallback();
-//        virtual void HandleErrorCallback();
 
     protected:
         char *jpeg;
@@ -47,6 +41,5 @@ public:
 
     void setRect(const Rect &r);
 };
-
 
 #endif

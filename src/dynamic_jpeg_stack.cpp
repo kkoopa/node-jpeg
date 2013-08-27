@@ -7,7 +7,6 @@
 #include "common.h"
 #include "dynamic_jpeg_stack.h"
 #include "jpeg_encoder.h"
-#include "buffer_compat.h"
 
 using namespace v8;
 using namespace node;
@@ -380,7 +379,7 @@ void DynamicJpegStack::DynamicJpegEncodeWorker::Execute() {
         jpeg_len = encoder.get_jpeg_len();
         jpeg = (char *)malloc(sizeof(*jpeg)*jpeg_len);
         if (!jpeg) {
-            errmsg = strdup("malloc in DynamicJpegStack::EIO_JpegEncode failed.");
+            errmsg = strdup("malloc in DynamicJpegStack::DynamicJpegEncodeWorker::Execute() failed.");
         }
         else {
             memcpy(jpeg, encoder.get_jpeg(), jpeg_len);
@@ -407,6 +406,27 @@ void DynamicJpegStack::DynamicJpegEncodeWorker::HandleOKCallback() {
     }
 
     free(jpeg);
+    jpeg = NULL;
+
+    jpeg_obj->Unref();
+}
+
+void DynamicJpegStack::DynamicJpegEncodeWorker::HandleErrorCallback() {
+    NanScope();
+    Local<Value> argv[3] = {Undefined(), Undefined(), v8::Exception::Error(v8::String::New(errmsg))};
+
+    TryCatch try_catch; // don't quite see the necessity of this
+
+    callback->Call(3, argv);
+
+    if (try_catch.HasCaught()) {
+        FatalException(try_catch);
+    }
+
+    if (jpeg) {
+        free(jpeg);
+        jpeg = NULL;
+    }
 
     jpeg_obj->Unref();
 }

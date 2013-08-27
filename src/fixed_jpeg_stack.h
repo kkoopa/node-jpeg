@@ -13,9 +13,6 @@ class FixedJpegStack : public node::ObjectWrap {
 
     unsigned char *data;
 
-    static void EIO_JpegEncode(uv_work_t *req);
-    static int EIO_JpegEncodeAfter(uv_work_t *req);
-
 public:
     static void Initialize(v8::Handle<v8::Object> target);
     FixedJpegStack(int wwidth, int hheight, buffer_type bbuf_type);
@@ -30,6 +27,7 @@ public:
 
         void Execute();
         void HandleOKCallback();
+        void HandleErrorCallback();
 
     private:
         FixedJpegStack *jpeg_obj;

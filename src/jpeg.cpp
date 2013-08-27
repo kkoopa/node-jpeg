@@ -7,7 +7,6 @@
 #include "common.h"
 #include "jpeg.h"
 #include "jpeg_encoder.h"
-#include "buffer_compat.h"
 
 using namespace v8;
 using namespace node;
@@ -175,7 +174,7 @@ void Jpeg::JpegEncodeWorker::Execute() {
         jpeg_len = jpeg_obj->jpeg_encoder.get_jpeg_len();
         jpeg = (char *)malloc(sizeof(*jpeg)*jpeg_len);
         if (!jpeg) {
-            errmsg = strdup("malloc in Jpeg::EIO_JpegEncode failed.");
+            errmsg = strdup("malloc in Jpeg::JpegEncodeWorker::Execute() failed.");
         }
         else {
             memcpy(jpeg, jpeg_obj->jpeg_encoder.get_jpeg(), jpeg_len);
@@ -202,6 +201,26 @@ void Jpeg::JpegEncodeWorker::HandleOKCallback() {
     }
 
     free(jpeg);
+    jpeg = NULL;
+
+    jpeg_obj->Unref();
+}
+
+void Jpeg::JpegEncodeWorker::HandleErrorCallback() {
+    NanScope();
+    Local<Value> argv[2] = {Undefined(), v8::Exception::Error(v8::String::New(errmsg))};
+
+    TryCatch try_catch; // don't quite see the necessity of this
+
+    callback->Call(2, argv);
+
+    if (try_catch.HasCaught()) {
+        FatalException(try_catch);
+    }
+
+    if (jpeg) {
+        free(jpeg);
+    }
 
     jpeg_obj->Unref();
 }

@@ -16,6 +16,7 @@ class Jpeg : public node::ObjectWrap {
 
         void Execute();
         void HandleOKCallback();
+        void HandleErrorCallback();
 
     private:
         Jpeg *jpeg_obj;

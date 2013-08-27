@@ -7,7 +7,6 @@
 #include "common.h"
 #include "fixed_jpeg_stack.h"
 #include "jpeg_encoder.h"
-#include "buffer_compat.h"
 
 using namespace v8;
 using namespace node;
@@ -250,7 +249,7 @@ void FixedJpegStack::FixedJpegEncodeWorker::Execute() {
         jpeg_len = encoder.get_jpeg_len();
         jpeg = (char *)malloc(sizeof(*jpeg)*jpeg_len);
         if (!jpeg) {
-            errmsg = strdup("malloc in FixedJpegStack::EIO_JpegEncode failed.");
+            errmsg = strdup("malloc in FixedJpegStack::FixedJpegEncodeWorker::Execute() failed.");
         }
         else {
             memcpy(jpeg, encoder.get_jpeg(), jpeg_len);
@@ -277,9 +276,31 @@ void FixedJpegStack::FixedJpegEncodeWorker::HandleOKCallback() {
     }
 
     free(jpeg);
+    jpeg = NULL;
 
     jpeg_obj->Unref();
 }
+
+void FixedJpegStack::FixedJpegEncodeWorker::HandleErrorCallback() {
+    NanScope();
+    Local<Value> argv[2] = {Undefined(), v8::Exception::Error(v8::String::New(errmsg))};
+
+    TryCatch try_catch; // don't quite see the necessity of this
+
+    callback->Call(2, argv);
+
+    if (try_catch.HasCaught()) {
+        FatalException(try_catch);
+    }
+
+    if (jpeg) {
+        free(jpeg);
+        jpeg = NULL;
+    }
+
+    jpeg_obj->Unref();
+}
+
 
 NAN_METHOD(FixedJpegStack::JpegEncodeAsync)
 {
